@@ -550,21 +550,29 @@ _main() {
 		### The main pgautoupgrade scripting ends here ###
 	fi
 
-  ### Post-upgrade scripting start
+	### Post-upgrade scripting start
+	if [ "x${PGAUTO_DEVEL}" = "xpost" ]; then
+		echo "--------------------------------------------------------------------------"
+		echo "In pgautoupgrade development mode, paused prior to post-upgrade scripting."
+		echo "--------------------------------------------------------------------------"
+		while :; do
+			sleep 5
+		done
+	fi
 
 	# If the PG_VERSION_MINOR file exists, then check whether we need to run any post-upgrade tasks
 	local PGMINOR=0
 	local PGTARGETMINOR=4
 	if [ -s "${PGDATA}/PG_VERSION_MINOR" ]; then
 		PGMINOR=$(cat "${PGDATA}/PG_VERSION_MINOR")
-  fi
+	fi
 	if [ "$PGVER" -eq 15 ] && [ "$PGMINOR" -lt 4 ]; then
-			# We need to regenerate any BRIN indexes for this database cluster
+		# We need to regenerate any BRIN indexes for this database cluster
 
-			# 1. Get the list of databases in the database cluster
-			# 2. For each database, get the list of BRIN indexes
-			# 3. Regenerate the BRIN indexes
-			echo TBD
+		# 1. Get the list of databases in the database cluster
+		# 2. For each database, get the list of BRIN indexes
+		# 3. Regenerate the BRIN indexes
+		echo TBD
 	fi
 
 	# Update (or create) the PG_VERSION_MINOR file
