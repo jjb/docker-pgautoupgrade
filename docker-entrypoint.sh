@@ -376,13 +376,13 @@ _main() {
 			# Ensure the database files are a version we can upgrade
 			local RECOGNISED=0
 			local OLDPATH=unset
-			if [ "${PGVER}" = "9.5" ] || [ "${PGVER}" = "9.6" ] || [ "${PGVER}" = "10" ] || [ "${PGVER}" = "11" ] || [ "${PGVER}" = "12" ]; then
+			if [ "${PGVER}" = "9.5" ] || [ "${PGVER}" = "9.6" ] || [ "${PGVER}" -eq 10 ] || [ "${PGVER}" -eq 11 ] || [ "${PGVER}" -eq 12 ]; then
 				RECOGNISED=1
 			fi
-			if [ "${PGTARGET}" -gt 13 ] && [ "${PGVER}" = "13" ]; then
+			if [ "${PGTARGET}" -gt 13 ] && [ "${PGVER}" -eq 13 ]; then
 				RECOGNISED=1
 			fi
-			if [ "${PGTARGET}" -gt 14 ] && [ "${PGVER}" = "14" ]; then
+			if [ "${PGTARGET}" -gt 14 ] && [ "${PGVER}" -eq 14 ]; then
 				RECOGNISED=1
 			fi
 			if [ "${RECOGNISED}" -eq 1 ]; then
@@ -549,6 +549,28 @@ _main() {
 
 		### The main pgautoupgrade scripting ends here ###
 	fi
+
+  ### Post-upgrade scripting start
+
+	# If the PG_VERSION_MINOR file exists, then check whether we need to run any post-upgrade tasks
+	local PGMINOR=0
+	local PGTARGETMINOR=4
+	if [ -s "${PGDATA}/PG_VERSION_MINOR" ]; then
+		PGMINOR=$(cat "${PGDATA}/PG_VERSION_MINOR")
+  fi
+	if [ "$PGVER" -eq 15 ] && [ "$PGMINOR" -lt 4 ]; then
+			# We need to regenerate any BRIN indexes for this database cluster
+
+			# 1. Get the list of databases in the database cluster
+			# 2. For each database, get the list of BRIN indexes
+			# 3. Regenerate the BRIN indexes
+			echo TBD
+	fi
+
+	# Update (or create) the PG_VERSION_MINOR file
+	echo ${PGTARGETMINOR} > "${PGDATA}/PG_VERSION_MINOR"
+
+  ### Post-upgrade scripting end
 
 	# For development of pgautoupgrade.  This spot leaves the container running, after the pgautoupgrade scripting has
 	# executed, but without subsequently running the PostgreSQL server
