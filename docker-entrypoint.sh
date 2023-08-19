@@ -550,11 +550,24 @@ _main() {
 		### The main pgautoupgrade scripting ends here ###
 	fi
 
+	# For development of pgautoupgrade.  This spot leaves the container running, after the pgautoupgrade scripting has
+	# executed, but without subsequently running the PostgreSQL server
+	if [ "x${PGAUTO_DEVEL}" = "xserver" ]; then
+		echo "In pgautoupgrade development mode, so database server not started."
+		while :; do
+			sleep 5
+		done
+	else
+		# Use pg_ctl to start the server in the background
+		pg_ctl start -D "${PGDATA}"
+	fi
+
 	### Post-upgrade scripting start
 	if [ "x${PGAUTO_DEVEL}" = "xpost" ]; then
 		echo "--------------------------------------------------------------------------"
 		echo "In pgautoupgrade development mode, paused prior to post-upgrade scripting."
 		echo "--------------------------------------------------------------------------"
+
 		while :; do
 			sleep 5
 		done
@@ -580,16 +593,10 @@ _main() {
 
   ### Post-upgrade scripting end
 
-	# For development of pgautoupgrade.  This spot leaves the container running, after the pgautoupgrade scripting has
-	# executed, but without subsequently running the PostgreSQL server
-	if [ "x${PGAUTO_DEVEL}" = "xserver" ]; then
-		echo "In pgautoupgrade development mode, so database server not started."
-		while :; do
-			sleep 5
-		done
-	else
-		exec "$@"
-	fi
+	# Infinite loop
+	while :; do
+		sleep 5
+	done
 }
 
 if ! _is_sourced; then
