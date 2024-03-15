@@ -568,4 +568,4 @@ _main() {
 # if ! _is_sourced; then
 # 	_main "$@"
 # fi
-exec "$@"
+exec su-exec postgres "$@"
