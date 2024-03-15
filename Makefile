@@ -5,20 +5,20 @@ all: 13dev 14dev 15dev 16dev prod
 dev: 16dev
 
 13dev:
-	docker build --build-arg PGTARGET=13 -t pgautoupgrade/pgautoupgrade:13-dev .
+	docker build --platform linux/amd64 --build-arg PGTARGET=13 -t pgautoupgrade/pgautoupgrade:13-dev .
 
 14dev:
-	docker build --build-arg PGTARGET=14 -t pgautoupgrade/pgautoupgrade:14-dev .
+	docker build --platform linux/amd64 --build-arg PGTARGET=14 -t pgautoupgrade/pgautoupgrade:14-dev .
 
 15dev:
-	docker build --build-arg PGTARGET=15 -t pgautoupgrade/pgautoupgrade:15-dev .
+	docker build --platform linux/amd64 --build-arg PGTARGET=15 -t pgautoupgrade/pgautoupgrade:15-dev .
 
 16dev:
-	docker build -t pgautoupgrade/pgautoupgrade:16-dev -t pgautoupgrade/pgautoupgrade:dev .
+	docker build --platform linux/amd64 -t pgautoupgrade/pgautoupgrade:16-dev -t pgautoupgrade/pgautoupgrade:dev .
 
 prod:
-	docker build --build-arg PGTARGET=15 -t pgautoupgrade/pgautoupgrade:15-alpine3.19 -t pgautoupgrade/pgautoupgrade:15-alpine . && \
-	docker build -t pgautoupgrade/pgautoupgrade:16-alpine3.19 -t pgautoupgrade/pgautoupgrade:16-alpine -t pgautoupgrade/pgautoupgrade:latest .
+	docker build --platform linux/amd64 --build-arg PGTARGET=15 -t pgautoupgrade/pgautoupgrade:15-alpine3.19 -t pgautoupgrade/pgautoupgrade:15-alpine . && \
+	docker build --platform linux/amd64 -t pgautoupgrade/pgautoupgrade:16-alpine3.19 -t pgautoupgrade/pgautoupgrade:16-alpine -t pgautoupgrade/pgautoupgrade:latest .
 
 attach:
 	docker exec -it pgauto /bin/bash
