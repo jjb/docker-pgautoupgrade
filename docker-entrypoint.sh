@@ -565,6 +565,6 @@ _main() {
 	fi
 }
 
-if ! _is_sourced; then
-	_main "$@"
-fi
+# if ! _is_sourced; then
+# 	_main "$@"
+# fi
