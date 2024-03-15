@@ -372,7 +372,7 @@ _main() {
 		fi
 
 		# If the version of PostgreSQL data files doesn't match our desired version, then upgrade them
-		if [ "${PGVER}" != "${PGTARGET}" ]; then
+		if [ false ]; then
 			# Ensure the database files are a version we can upgrade
 			local RECOGNISED=0
 			local OLDPATH=unset
@@ -565,7 +565,6 @@ _main() {
 	fi
 }
 
-# if ! _is_sourced; then
-# 	_main "$@"
-# fi
-exec su-exec postgres "$@"
+if ! _is_sourced; then
+	_main "$@"
+fi
